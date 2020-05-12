@@ -1,5 +1,3 @@
-OpenFaaS Node Template
+= OpenFaaS NodeJS Custom Template
 
-* [*] Fork of https://github.com/openfaas/templates/tree/master/template/node12[node12 official template]
-* [*] Use Yarn
-* [*] Have a build step
+Forked from https://github.com/openfaas/templates/tree/master/template/node12[node12 official template]

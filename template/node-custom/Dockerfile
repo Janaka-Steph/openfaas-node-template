@@ -1,5 +1,5 @@
-FROM openfaas/of-watchdog:0.7.2 as watchdog
-FROM node:12.13.0-alpine as ship
+FROM openfaas/of-watchdog:0.7.7 as watchdog
+FROM node:14.2-alpine as ship
 
 COPY --from=watchdog /fwatchdog /usr/bin/fwatchdog
 RUN chmod +x /usr/bin/fwatchdog
@@ -18,29 +18,26 @@ RUN mkdir -p /home/app
 WORKDIR /home/app
 COPY package.json ./
 
-# This ordering means the yarn installation is cached for the outer function handler.
-RUN yarn install
+# This ordering means the npm installation is cached for the outer function handler.
+RUN npm i
 
 # Copy outer function handler
 COPY index.js ./
 
 # COPY function node packages and install, adding this as a separate
-# entry allows caching of yarn install
+# entry allows caching of npm install
 
 WORKDIR /home/app/function
 
 COPY function/*.json ./
 
-RUN yarn install || :
+RUN npm i || :
 
 # COPY function files and folders
 COPY function/ ./
 
 # Run any tests that may be available
-RUN yarn test
-
-# Build the project
-RUN yarn build
+RUN npm test
 
 # Set correct permissions to use non root user
 WORKDIR /home/app/
@@ -63,4 +60,3 @@ ENV read_timeout="15s"
 HEALTHCHECK --interval=3s CMD [ -e /tmp/.lock ] || exit 1
 
 CMD ["fwatchdog"]
-
