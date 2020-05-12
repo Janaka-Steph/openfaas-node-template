@@ -21,6 +21,9 @@ COPY package.json ./
 # This ordering means the npm installation is cached for the outer function handler.
 RUN npm i
 
+# Install nodemon globally to restart fwatchdog on code change
+RUN npm i -g nodemon
+
 # Copy outer function handler
 COPY index.js ./
 
